@@ -1,5 +1,4 @@
 lazy val commonSettings = Seq(
-  version := Version.benchmarks,
   scalaVersion := Version.scala,
   crossScalaVersions := Version.crossScala,
   description := "Sandbox for Scala development",
