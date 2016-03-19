@@ -17,17 +17,15 @@ lazy val commonSettings = Seq(
 
   resolvers += Resolver.bintrayRepo("azavea", "maven"),
   libraryDependencies ++= Seq(
-    "com.azavea" %% "scaliper" % "0.5.0-c5566b1" % "test",
     "org.scalatest"       %%  "scalatest"      % Version.scalaTest % "test"
   ),
 
   parallelExecution in Test := false,
 
   shellPrompt := { s => Project.extract(s).currentProject.id + " > " }
-) ++ net.virtualvoid.sbt.graph.Plugin.graphSettings
+)
 
-lazy val root = Project("root", file(".")).
-  dependsOn(scalaSandbox)
+lazy val root = Project("root", file(".")).aggregate(scalaSandbox)
 
 lazy val scalaSandbox = Project("sandbox", file("sandbox")).
   settings(commonSettings: _*)
