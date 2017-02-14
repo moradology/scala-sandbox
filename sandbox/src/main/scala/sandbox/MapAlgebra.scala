@@ -10,10 +10,20 @@ import java.util.UUID
 
 sealed trait MapAlgebra {
   def args: List[MapAlgebra]
+  def evaluable: Boolean
+  def unbound: List[MapAlgebra]
 }
 
 object MapAlgebra {
-  sealed trait Operation extends MapAlgebra { def symbol: String }
+  sealed trait Operation extends MapAlgebra {
+    def symbol: String
+    def evaluable: Boolean = (args.length >= 1) && (args.foldLeft(true)(_ && _.evaluable))
+    def unbound: List[MapAlgebra] =
+      args.foldLeft(List[MapAlgebra]())({ case (list, mapAlgebra) =>
+        if (!mapAlgebra.evaluable) mapAlgebra :: list
+        else list
+      })
+  }
 
   sealed abstract class LocalOperation(val symbol: String) extends Operation
   case class Addition(args: List[MapAlgebra], id: UUID, label: Option[String])
@@ -30,24 +40,27 @@ object MapAlgebra {
       extends LocalOperation("reclassify")
 
 
-  sealed trait Source extends MapAlgebra { def args: List[MapAlgebra] = List.empty }
+  sealed trait Source extends MapAlgebra {
+    def args: List[MapAlgebra] = List.empty
+    def unbound: List[MapAlgebra] = List(this)
+  }
 
   sealed trait RasterSource extends Source
   case class SceneSource(id: UUID, label: Option[String], scene: Option[UUID], band: Option[Int])
-      extends RasterSource
+      extends RasterSource { def evaluable = scene.isDefined }
   case class MosaicSource(id: UUID, label: Option[String], mosaic: Option[UUID], band: Option[Int])
-      extends RasterSource
+      extends RasterSource { def evaluable = mosaic.isDefined }
   case class MLToolSource(id: UUID, label: Option[String], toolRun: Option[UUID])
-      extends RasterSource
+      extends RasterSource { def evaluable = toolRun.isDefined }
   case class RefSource(id: UUID, label: Option[String], ref: UUID)
-      extends RasterSource
+      extends RasterSource { def evaluable = true }
 
   case class VectorSource(id: UUID, label: Option[String], value: Option[Polygon])
-      extends Source
+      extends Source { def evaluable = value.isDefined }
   case class DecimalSource(id: UUID, label: Option[String], value: Option[Double])
-      extends Source
+      extends Source { def evaluable = value.isDefined }
   case class IntegralSource(id: UUID, label: Option[String], value: Option[Int])
-      extends Source
+      extends Source { def evaluable = value.isDefined }
 }
 
 object MapAlgebraProtocol extends DefaultJsonProtocol {
