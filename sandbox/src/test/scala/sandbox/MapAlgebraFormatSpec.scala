@@ -133,8 +133,10 @@ class MapAlgebraFormatSpec extends FunSpec with Matchers {
       |}
       |""".stripMargin
 
-  it("parses the ndvi difference recipe") {
-    println(ndviDiffRecipe.parseJson.convertTo[MapAlgebra])
+  it("parses and safely round-trips ndvi diff recipe") {
+    val parsed = ndviDiffRecipe.parseJson.convertTo[MapAlgebra]
+
+    parsed shouldBe (parsed.toJson.convertTo[MapAlgebra])
   }
 }
 

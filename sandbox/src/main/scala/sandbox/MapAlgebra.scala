@@ -59,31 +59,37 @@ object MapAlgebraProtocol extends DefaultJsonProtocol {
           case lop: LocalOperation => lop match {
             case add@Addition(args, id, label) => JsObject(
               "apply" -> JsString(add.symbol),
+              "id" -> id.toJson,
               "label" -> label.toJson,
               "args" -> args.toJson
             )
             case subtract@Subtraction(args, id, label) => JsObject(
               "apply" -> JsString(subtract.symbol),
+              "id" -> id.toJson,
               "label" -> label.toJson,
               "args" -> args.toJson
             )
             case multiply@Multiplication(args, id, label) => JsObject(
               "apply" -> JsString(multiply.symbol),
+              "id" -> id.toJson,
               "label" -> label.toJson,
               "args" -> args.toJson
             )
             case divide@Division(args, id, label) => JsObject(
               "apply" -> JsString(divide.symbol),
+              "id" -> id.toJson,
               "label" -> label.toJson,
               "args" -> args.toJson
             )
             case mask@Masking(args, id, label) => JsObject(
               "apply" -> JsString(mask.symbol),
+              "id" -> id.toJson,
               "label" -> label.toJson,
               "args" -> args.toJson
             )
             case reclassify@Reclassification(args, id, label, classBreaks) => JsObject(
               "apply" -> JsString(reclassify.symbol),
+              "id" -> id.toJson,
               "label" -> label.toJson,
               "args" -> args.toJson,
               "classBreaks" -> classBreaks.toJson
