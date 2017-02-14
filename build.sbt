@@ -15,9 +15,11 @@ lazy val commonSettings = Seq(
     "-language:existentials",
     "-feature"),
 
-  resolvers += Resolver.bintrayRepo("azavea", "maven"),
   libraryDependencies ++= Seq(
-    "org.scalatest"       %%  "scalatest"      % Version.scalaTest % "test"
+    "org.scalatest"               %% "scalatest"         % Version.scalaTest % "test",
+    "org.locationtech.geotrellis" %% "geotrellis-raster" % "1.0.0",
+    "org.locationtech.geotrellis" %% "geotrellis-spark"  % "1.0.0",
+    "io.spray"                    %%  "spray-json"       % "1.3.3"
   ),
 
   parallelExecution in Test := false,
