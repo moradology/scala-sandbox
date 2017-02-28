@@ -19,7 +19,11 @@ lazy val commonSettings = Seq(
     "org.scalatest"               %% "scalatest"         % Version.scalaTest % "test",
     "org.locationtech.geotrellis" %% "geotrellis-raster" % "1.0.0",
     "org.locationtech.geotrellis" %% "geotrellis-spark"  % "1.0.0",
-    "io.spray"                    %%  "spray-json"       % "1.3.3"
+    "io.spray"                    %%  "spray-json"       % "1.3.3",
+    "io.circe"                    %% "circe-core"        % "0.7.0",
+    "io.circe"                    %% "circe-generic"     % "0.7.0",
+    "io.circe"                    %% "circe-parser"      % "0.7.0",
+    "io.circe"                    %% "circe-optics"      % "0.7.0"
   ),
 
   parallelExecution in Test := false,

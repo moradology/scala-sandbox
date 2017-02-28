@@ -7,7 +7,7 @@ import java.util.UUID
 case class MapAlgebraRef(operation: MapAlgebra, ref: UUID)
 
 object MapAlgebraRef {
-  import MapAlgebraProtocol._
+  import MapAlgebraProtocolSpray._
   implicit val mapAlgebraRefFormat = jsonFormat2(MapAlgebraRef.apply _)
 }
 

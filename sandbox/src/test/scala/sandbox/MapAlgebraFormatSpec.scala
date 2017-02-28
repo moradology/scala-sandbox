@@ -35,14 +35,14 @@ class MapAlgebraFormatSpec extends FunSpec with Matchers {
       |                  "id": "3ba35079-cf30-42b9-a640-b66b2e77be08",
       |                  "type": "raster",
       |                  "label": "red",
-      |                  "mosaic": "123e4567-e89b-12d3-a456-426655440000",
+      |                  "project": "123e4567-e89b-12d3-a456-426655440000",
       |                  "band": 3
       |                },
       |                {
       |                  "id": "3ba35079-cf30-42b9-a640-b66b2e77ae08",
       |                  "type": "raster",
       |                  "label": "nir",
-      |                  "mosaic": "123e4567-e89b-12d3-a456-426655440000",
+      |                  "project": "123e4567-e89b-12d3-a456-426655440000",
       |                  "band": 4
       |                }
       |              ]
@@ -55,14 +55,14 @@ class MapAlgebraFormatSpec extends FunSpec with Matchers {
       |                  "id": "2ba35079-cf30-42b9-a640-b67b2e77ae08",
       |                  "type": "raster",
       |                  "label": "red",
-      |                  "mosaic": "123e4567-e89b-12d3-a456-426655440000",
+      |                  "project": "123e4567-e89b-12d3-a456-426655440000",
       |                  "band": 3
       |                },
       |                {
       |                  "id": "2ba65079-cf30-42b9-a640-b67b2e77ae08",
       |                  "type": "raster",
       |                  "label": "nir",
-      |                  "mosaic": "123e4567-e89b-12d3-a456-426655440000",
+      |                  "project": "123e4567-e89b-12d3-a456-426655440000",
       |                  "band": 4
       |                }
       |              ]
@@ -93,14 +93,14 @@ class MapAlgebraFormatSpec extends FunSpec with Matchers {
       |                  "id": "2ba25079-cf30-42b9-a640-b66b2e77af05",
       |                  "type": "raster",
       |                  "label": "red",
-      |                  "mosaic": "123e4567-e89b-12d3-a456-426655440001",
+      |                  "project": "123e4567-e89b-12d3-a456-426655440001",
       |                  "band": 3
       |                },
       |                {
       |                  "id": "2ba25079-cf30-42b9-a640-b66b2e77ae06",
       |                  "type": "raster",
       |                  "label": "nir",
-      |                  "mosaic": "123e4567-e89b-12d3-a456-426655440001",
+      |                  "project": "123e4567-e89b-12d3-a456-426655440001",
       |                  "band": 4
       |                }
       |              ]
@@ -113,14 +113,13 @@ class MapAlgebraFormatSpec extends FunSpec with Matchers {
       |                  "id": "2ba25079-cf30-42b9-a640-b66b2e77ae05",
       |                  "type": "raster",
       |                  "label": "red",
-      |                  "mosaic": "123e4567-e89b-12d3-a456-426655440001",
+      |                  "project": "123e4567-e89b-12d3-a456-426655440001",
       |                  "band": 3
       |                },
       |                {
-      |                  "id": "2ba25079-cf30-42b9-a640-b66b2e77ae04",
       |                  "type": "raster",
       |                  "label": "nir",
-      |                  "mosaic": "123e4567-e89b-12d3-a456-426655440001",
+      |                  "project": "123e4567-e89b-12d3-a456-426655440001",
       |                  "band": 4
       |                }
       |              ]
@@ -136,6 +135,7 @@ class MapAlgebraFormatSpec extends FunSpec with Matchers {
   it("parses and safely round-trips ndvi diff recipe") {
     val parsed = ndviDiffRecipe.parseJson.convertTo[MapAlgebra]
 
+    println(parsed.toJson.prettyPrint)
     parsed shouldBe (parsed.toJson.convertTo[MapAlgebra])
   }
 }
