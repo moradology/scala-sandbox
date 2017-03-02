@@ -3,7 +3,7 @@ package sandbox
 import org.scalatest._
 import spray.json._
 
-import MapAlgebraProtocol._
+import MapAlgebraProtocolSpray._
 
 
 class MapAlgebraFormatSpec extends FunSpec with Matchers {

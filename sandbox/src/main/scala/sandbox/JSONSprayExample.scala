@@ -68,11 +68,10 @@ object MapAlgebraProtocolSpray extends DefaultJsonProtocol {
           deserializationError(s"Unable to deserialize raster at key $raster in $js)")
       }
 
-    def getValueAs[A: JsonFormat](key: String): A =
+    def getValueAs[A: JsonFormat](key: String): Option[A] =
       js.getFields(key) match {
-        case Seq(r) => r.convertTo[A]
-        case _ =>
-          deserializationError(s"Unable to deserialize object at key $key in $js")
+        case Seq(r) => scala.util.Try(r.convertTo[A]).toOption
+        case _ => None
       }
 
     def getOrSetId: UUID =
@@ -131,7 +130,7 @@ object MapAlgebraProtocolSpray extends DefaultJsonProtocol {
 
     def read(js: JsValue): Operation = {
       val jsObj = js.asJsObject
-      val nodeLabel: Option[String] = jsObj.getValueAs[Option[String]]("label")
+      val nodeLabel: Option[String] = jsObj.getValueAs[String]("label")
       val nodeId: UUID = jsObj.getOrSetId
       js.asJsObject.getFields("apply", "args") match {
         case Seq(JsString("+"), args) => Addition(args.convertTo[List[MapAlgebra]], nodeId, nodeLabel)
@@ -140,7 +139,7 @@ object MapAlgebraProtocolSpray extends DefaultJsonProtocol {
         case Seq(JsString("/"), args) => Division(args.convertTo[List[MapAlgebra]], nodeId, nodeLabel)
         case Seq(JsString("mask"), args) => Masking(args.convertTo[List[MapAlgebra]], nodeId, nodeLabel)
         case Seq(JsString("reclassify"), args) =>
-          val classBreaks: ClassBreaks = jsObj.getValueAs[ClassBreaks]("classBreaks")
+          val classBreaks: ClassBreaks = jsObj.getValueAs[ClassBreaks]("classBreaks").get
           Reclassification(args.convertTo[List[MapAlgebra]], nodeId, nodeLabel, classBreaks)
       }
     }
@@ -203,37 +202,37 @@ object MapAlgebraProtocolSpray extends DefaultJsonProtocol {
     def read(jsvalue: JsValue) = {
       val jsObj = jsvalue.asJsObject
       val keys = jsObj.fields.keys.toList
-      val nodeLabel: Option[String] = jsObj.getValueAs[Option[String]]("label")
+      val nodeLabel: Option[String] = jsObj.getValueAs[String]("label")
       val nodeId: UUID = jsObj.getOrSetId
 
       if (keys.contains("type")) { // This is a source
         jsObj.getFields("type") match {
           case Seq(JsString("raster")) =>
             if (keys.contains("project")) {
-              val project = jsObj.getValueAs[Option[UUID]]("project")
-              val band = jsObj.getValueAs[Option[Int]]("band")
+              val project = jsObj.getValueAs[UUID]("project")
+              val band = jsObj.getValueAs[Int]("band")
               RFProjectSource(nodeId, nodeLabel, project, band)
             } else if (keys.contains("scene")) {
-              val scene = jsObj.getValueAs[Option[UUID]]("scene")
-              val band = jsObj.getValueAs[Option[Int]]("band")
+              val scene = jsObj.getValueAs[UUID]("scene")
+              val band = jsObj.getValueAs[Int]("band")
               RFSceneSource(nodeId, nodeLabel, scene, band)
             } else if (keys.contains("toolRun")) {
-              val toolRun = jsObj.getValueAs[Option[UUID]]("toolRun")
+              val toolRun = jsObj.getValueAs[UUID]("toolRun")
               MLToolSource(nodeId, nodeLabel, toolRun)
             } else if (keys.contains("ref")) {
-              val ref: UUID = jsObj.getValueAs[UUID]("ref")
+              val ref = jsObj.getValueAs[UUID]("ref").get
               RefSource(nodeId, nodeLabel, ref)
             } else {
               deserializationError(s"Unable to deserialize raster source: ${jsvalue}")
             }
           case Seq(JsString("polygon")) =>
-            val poly = jsObj.getValueAs[Option[Polygon]]("value")
+            val poly = jsObj.getValueAs[Polygon]("value")
             VectorSource(nodeId, nodeLabel, poly)
           case Seq(JsString("double")) =>
-            val double = jsObj.getValueAs[Option[Double]]("value")
+            val double = jsObj.getValueAs[Double]("value")
             DecimalSource(nodeId, nodeLabel, double)
           case Seq(JsString("int")) =>
-            val int = jsObj.getValueAs[Option[Int]]("value")
+            val int = jsObj.getValueAs[Int]("value")
             IntegralSource(nodeId, nodeLabel, int)
         }
       } else {                           // This is a function
